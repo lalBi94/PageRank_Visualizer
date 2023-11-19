@@ -69,11 +69,13 @@ export default class Page {
 
     /**
      * Ajouter une page entrante.
+     * @param {Page} id_y Page y voulant se connecter
+     * @return {boolean}
      */
     addIn(id_y) {
         try {
             for(let i = 0; i <= this.in.length-1; ++i) {
-                if((this.in[i].getName() === p_y.getName()) && (this.in[i].getId() === p_y.getId())) {
+                if((this.in[i].getName() === id_y.getName()) && (this.in[i].getId() === id_y.getId())) {
                     return false
                 }
             }
@@ -86,6 +88,7 @@ export default class Page {
     /**
      * Ajouter une page sortante.
      * @param {Page} p_y La page sortante
+     * @return {boolean}
      */
     addOut(p_y) {
         try {
@@ -104,23 +107,30 @@ export default class Page {
      * Recuperer la pertinence de la page.
      * @return {number}
      */
-    getRelevance() { return this.relevance }
+    getRelevance() { 
+        return this.relevance 
+    }
 
     /**
      * Recuperer l'id de la page.
      * @return {string}
      */
-    getId() { return this.id }
+    getId() { 
+        return this.id 
+    }
 
     /**
      * Recuperer le npm de la page.
      * @return {string}
      */
-    getName() { return this.name }
+    getName() { 
+        return this.name 
+    }
 
     /**
      * Changer la position du point
      * @param {{x: number, y: number}} position 
+     * @return {Promise<void>}
      */
     async setPosition(position) {
         this.position = position;

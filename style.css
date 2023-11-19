@@ -1,3 +1,33 @@
+.green {
+    background: green;
+    color: white;
+    font-weight: bold;
+}
+
+.orange {
+    background: orange;
+    color: white;
+    font-weight: bold;
+}
+
+.red {
+    background: red;
+    color: white;
+    font-weight: bold;
+}
+
+.first:before {
+    content: "🥇"
+}
+
+.second:before {
+    content: "🥈"
+}
+
+.third:before {
+    content: "🥉"
+}
+
 #app {
     position: absolute;
     top: 50%;
@@ -9,5 +39,24 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    gap: 10%;
+    gap: 20px;
+    font-family: "Roboto", sans-serif;
+}
+
+#app > #scoreboard-container {
+    border: 1px solid black;
+}
+
+#app > #scoreboard-container > #scoreboard-datas-container {
+    padding: 20px;
+    text-align: center;
+}
+
+#app > #scoreboard-container > #scoreboard-datas-container > .scoreboard-datas-line > .scoreboard-datas {
+    padding: 5px;
+}
+
+#app > #scoreboard-container > #scoreboard-title-container > #scoreboard-title-line > .scoreboard-title {
+    border-bottom: 1px solid black;
+    padding: 15px;
 }

@@ -9,21 +9,21 @@
 
     <body>
         <div id="app">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Position</th>
-                        <th>Nom</th>
-                        <th>Score</th>
+            <table id="scoreboard-container">
+                <thead id="scoreboard-title-container">
+                    <tr id="scoreboard-title-line">
+                        <th class="scoreboard-title">Position</th>
+                        <th class="scoreboard-title">Nom</th>
+                        <th class="scoreboard-title">Score</th>
                     </tr>
                 </thead>
 
-                <tbody id="datas"></tbody>
+                <tbody id="scoreboard-datas-container"></tbody>
             </table>
     
-            <canvas width="500" height="500" id="root"></canvas>
+            <canvas id="root" width="500" height="500"></canvas>
         </div>
 
-        <script src="./src/main.js" type="module"></script>
+        <script src="./scripts/main.js" type="module"></script>
     </body>
 </html>
