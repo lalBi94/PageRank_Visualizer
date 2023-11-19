@@ -12,8 +12,8 @@ window.addEventListener("load", () => {
 		new Page(3, "Ubisoft", { x: 400 + 150 * Math.cos((6 * Math.PI) / 8), y: 300 + 150 * Math.sin((6 * Math.PI) / 8) }),
 		new Page(4, "Github", { x: 400 + 150 * Math.cos((8 * Math.PI) / 8), y: 300 + 150 * Math.sin((8 * Math.PI) / 8) }),
 		new Page(5, "Sony", { x: 400 + 150 * Math.cos((10 * Math.PI) / 8), y: 300 + 150 * Math.sin((10 * Math.PI) / 8) }),
-		new Page(5, "Onde", { x: 400 + 150 * Math.cos((12 * Math.PI) / 8), y: 300 + 150 * Math.sin((12 * Math.PI) / 8) }),
-		new Page(6, "Bilal", { x: 400 + 150 * Math.cos((14 * Math.PI) / 8), y: 300 + 150 * Math.sin((14 * Math.PI) / 8) })		
+		new Page(5, "Docker", { x: 400 + 150 * Math.cos((12 * Math.PI) / 8), y: 300 + 150 * Math.sin((12 * Math.PI) / 8) }),
+		new Page(6, "Riot Games", { x: 400 + 150 * Math.cos((14 * Math.PI) / 8), y: 300 + 150 * Math.sin((14 * Math.PI) / 8) })		
 	]; 
 
 	const gr = new Graph(PGS, ROOT);
