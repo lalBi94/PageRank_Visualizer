@@ -3,22 +3,29 @@ import Page from "./class/Page/Page.js";
 
 window.addEventListener("load", () => {
 	const ROOT = document.getElementById("root")
+	const DATAS = document.getElementById("datas")
 	let T = 1;
 
 	const PGS = [
-		new Page(0, "Facebook", { x: 400 + 150 * Math.cos(0), y: 300 + 150 * Math.sin(0) }),
-		new Page(1, "Microsoft", { x: 400 + 150 * Math.cos((2 * Math.PI) / 8), y: 300 + 150 * Math.sin((2 * Math.PI) / 8) }),
-		new Page(2, "Carrefour", { x: 400 + 150 * Math.cos((4 * Math.PI) / 8), y: 300 + 150 * Math.sin((4 * Math.PI) / 8) }),
-		new Page(3, "Ubisoft", { x: 400 + 150 * Math.cos((6 * Math.PI) / 8), y: 300 + 150 * Math.sin((6 * Math.PI) / 8) }),
-		new Page(4, "Github", { x: 400 + 150 * Math.cos((8 * Math.PI) / 8), y: 300 + 150 * Math.sin((8 * Math.PI) / 8) }),
-		new Page(5, "Sony", { x: 400 + 150 * Math.cos((10 * Math.PI) / 8), y: 300 + 150 * Math.sin((10 * Math.PI) / 8) }),
-		new Page(5, "Onde", { x: 400 + 150 * Math.cos((12 * Math.PI) / 8), y: 300 + 150 * Math.sin((12 * Math.PI) / 8) }),
-		new Page(6, "Bilal", { x: 400 + 150 * Math.cos((14 * Math.PI) / 8), y: 300 + 150 * Math.sin((14 * Math.PI) / 8) })		
+		new Page(0, "Facebook"),
+		new Page(1, "Microsoft"),
+		new Page(2, "Carrefour"),
+		new Page(3, "Ubisoft"),
+		new Page(4, "Github"),
+		new Page(5, "Sony"),
+		new Page(5, "Docker"),
+		new Page(6, "Gouv"),
+		new Page(7, "Reddit"),
+		new Page(8, "Origin"),
+		new Page(9, "iut-fbleau"),
+		new Page(10, "Coca cola"),
 	]; 
 
-	const gr = new Graph(PGS, ROOT);
+	const gr = new Graph(PGS, ROOT, DATAS);
 
 	setInterval(async () => {
+		console.log("--------------------------------------------------------")
+
 		const allPages = gr.getPages();
 
 		console.info(`\n[T ${T}]`);
@@ -41,12 +48,18 @@ window.addEventListener("load", () => {
 			].getName()})`
 		);
 
-		if (gr.updatePageOut(page_x_id, allPages[page_y_id]))
+		if (gr.updatePageOut(page_x_id, allPages[page_y_id])) {
 			gr.updatePageIn(page_y_id, allPages[page_x_id]);
+		}
 
-		await gr.pagerank()
+		gr.pagerank()
 		await gr.generateGraph()
+		await gr.generateRanking()
+		await gr.randomRemove()
+
 		console.log("\n", gr.getPages());
 		T++;
-	}, 500)
+
+		console.log("--------------------------------------------------------")
+	}, 100)
 });

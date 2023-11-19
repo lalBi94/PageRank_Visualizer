@@ -1,16 +1,13 @@
-#root {
-}
-
-#root > .node {
+#app {
     position: absolute;
-    background: red;
-    width: 20px;
-    height: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    border-radius: 50px;
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    gap: 10%;
 }

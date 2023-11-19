@@ -2,12 +2,11 @@ export default class Page {
     /**
      * @param {number} id Identifiant de la page.
      * @param {string} name Nom du site.
-     * @param {{x:number, y:number, z:number}} La position du node dans la feuille.
      */
-    constructor(id, name, postion) {
+    constructor(id, name) {
         this.id = id
         this.name = name
-        this.postion = postion
+        this.position = {x: 0, y: 0}
         this.relevance = 0.0
 
         /**
@@ -35,6 +34,22 @@ export default class Page {
     getOut() {
         return this.out
     }
+    
+    /**
+     * Supprimer une page sortante
+     * @param {number} index Index de la page sortante a supprimer 
+     */
+    deleteInOut(index) {
+        let tmp = []
+
+        for(let i = 0; i <= this.out.length-1; ++i) {
+            if(i !== index) {
+                tmp.push(this.out[i])
+            }
+        }
+
+        this.out = tmp
+    }
 
     /**
      * Recuperer les entree
@@ -42,14 +57,6 @@ export default class Page {
      */
     getIn() {
         return this.out
-    }
-
-    /**
-     * Recuperer la position de la page.
-     * @return {x: number, y: number} 
-     */
-    getPosition() {
-        return this.postion
     }
 
     /**
@@ -64,7 +71,16 @@ export default class Page {
      * Ajouter une page entrante.
      */
     addIn(id_y) {
-        this.in.push(id_y)
+        try {
+            for(let i = 0; i <= this.in.length-1; ++i) {
+                if((this.in[i].getName() === p_y.getName()) && (this.in[i].getId() === p_y.getId())) {
+                    return false
+                }
+            }
+    
+            this.in.push(id_y)
+            return true
+        } catch(err) {}
     }
 
     /**
@@ -72,14 +88,16 @@ export default class Page {
      * @param {Page} p_y La page sortante
      */
     addOut(p_y) {
-        for(let i = 0; i <= this.out.length-1; ++i) {
-            if((this.out[i].getName() === p_y.getName()) && (this.out[i].getId() === p_y.getId())) {
-                console.log("break")
-                return
+        try {
+            for(let i = 0; i <= this.out.length-1; ++i) {
+                if((this.out[i].getName() === p_y.getName()) && (this.out[i].getId() === p_y.getId())) {
+                    return false
+                }
             }
-        }
-
-        this.out.push(p_y)
+    
+            this.out.push(p_y)
+            return true
+        } catch(err) {}
     }
 
     /**
@@ -104,7 +122,15 @@ export default class Page {
      * Changer la position du point
      * @param {{x: number, y: number}} position 
      */
-    setPosition(position) {
+    async setPosition(position) {
         this.position = position;
+    }
+
+    /**
+     * Recuperer la position de la page.
+     * @return {Promise<{x: number, y: number}>}
+     */
+    async getPosition() {
+        return this.position
     }
 }
