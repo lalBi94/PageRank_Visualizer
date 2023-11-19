@@ -3,8 +3,8 @@ import Page from "./class/Page/Page.js";
 
 window.addEventListener("load", () => {
 	const ROOT = document.getElementById("root")
-	const DATAS = document.getElementById("datas")
-	let T = 1;
+	const DATAS = document.getElementById("scoreboard-datas-container")
+	let T = 0;
 
 	const PGS = [
 		new Page(0, "Facebook"),
@@ -52,14 +52,12 @@ window.addEventListener("load", () => {
 			gr.updatePageIn(page_y_id, allPages[page_x_id]);
 		}
 
-		gr.pagerank()
+		await gr.pagerank()
 		await gr.generateGraph()
 		await gr.generateRanking()
 		await gr.randomRemove()
 
-		console.log("\n", gr.getPages());
+		console.log(gr.getPages());
 		T++;
-
-		console.log("--------------------------------------------------------")
-	}, 1)
+	}, 100)
 });

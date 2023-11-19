@@ -2,7 +2,7 @@ import Page from "./../Page/Page.js";
 
 export default class Graph {
 	/**
-	 * @param {Page[]} pages Les pages qui seront dans la modelisation.
+	 * @param {Array<Page>} pages Les pages qui seront dans la modelisation.
 	 * @param {HTMLElement} root La racine ou injecter les nodes.
 	 * @param {HTMLElement} datas La racine ou injecter les nodes.
 	 */
@@ -20,7 +20,7 @@ export default class Graph {
 
 	/**
 	 * Supprimer aleatoirement a chaque iteration une page y faisant partie de la sortie d'une page x
-	 * en fonction de sa pertinence
+	 * en fonction de sa pertinence.
 	 */
 	async randomRemove() {
 		const page_x_id = Math.round(Math.random() * (this.pages.length - 1));
@@ -33,7 +33,7 @@ export default class Graph {
 	}
 
 	/**
-	 * Generer le tableau des score
+	 * Generer le tableau des scores.
 	 * @return {Promise<void>}
 	 */
 	async generateRanking() {
@@ -46,15 +46,34 @@ export default class Graph {
 
 		for(let i = 0; i <= sorted.length-1; ++i) {
 			const tr = document.createElement("tr")
+			tr.setAttribute("class", "scoreboard-datas-line")
 
 			const position = document.createElement("td")
+			position.setAttribute("class", "scoreboard-datas")
 			position.innerText = i+1
 
 			const nom = document.createElement("td")
 			nom.innerText = sorted[i].getName()
 
+			if (i === 0) {
+				nom.setAttribute("class", "scoreboard-datas first")
+			} else if (i === 1) {
+				nom.setAttribute("class", "scoreboard-datas second")
+			} else if (i === 2) {
+				nom.setAttribute("class", "scoreboard-datas third")
+			}
+
 			const score = document.createElement("td")
 			score.innerText = (parseFloat(sorted[i].getRelevance())*100).toFixed(2)
+
+			const rev = parseFloat(score.innerText)
+			if (rev <= 8) {
+				score.setAttribute("class", "scoreboard-datas red")
+			} else if (rev <= 14) {
+				score.setAttribute("class", "scoreboard-datas orange")
+			} else {
+				score.setAttribute("class", "scoreboard-datas green")
+			}
 
 			tr.appendChild(position)
 			tr.appendChild(nom)
@@ -68,54 +87,64 @@ export default class Graph {
 	 * Calcul du PageRank de toutes les pages.
 	 * @param {?number} d Amortissement.
 	 * @param {number} maxIterations Nombre d'iteration maximum.
-	 * @return {Array<number>}
+	 * @return {Promise<Array<number>>}
 	 */
 	pagerank(d = 0.85, maxIterations = 100) {
-		const N = this.pages.length;
-		let PR = new Array(N).fill(1 / N);
-
-		for (let iteration = 0; iteration <= maxIterations-1; ++iteration) {
-			let newPR = new Array(N).fill(0);
-
-			for (let i = 0; i <= N-1; ++i) {
-				const outDegree = this.pages[i].getOut().length;
+		return new Promise((resolve, _) => {
+			const N = this.pages.length;
+			let PR = new Array(N).fill(1 / N);
 	
-				if (outDegree > 0) {
-					const contribution = PR[i] / outDegree;
-
-					this.pages[i].getOut().forEach((page, j) => {
-						const index = this.pages.indexOf(page);
-						newPR[index] += contribution;
-					});
-				} else {
-					const uniformContribution = PR[i] / N;
-					newPR = newPR.map(rank => rank + uniformContribution);
+			for (let iteration = 0; iteration <= maxIterations-1; ++iteration) {
+				let newPR = new Array(N).fill(0);
+	
+				for (let i = 0; i <= N-1; ++i) {
+					const outDegree = this.pages[i].getOut().length;
+		
+					if (outDegree > 0) {
+						const contribution = PR[i] / outDegree;
+	
+						this.pages[i].getOut().forEach((page, __) => {
+							const index = this.pages.indexOf(page);
+							newPR[index] += contribution;
+						});
+					} else {
+						const uniformContribution = PR[i] / N;
+						newPR = newPR.map(rank => rank + uniformContribution);
+					}
 				}
+		
+				newPR = newPR.map(rank => (1 - d) / N + d * rank);
+		
+				if (this.isConverged(PR, newPR)) {
+					console.info(`[o] PageRank convergé après ${iteration + 1} itérations.`);
+					break;
+				}
+		
+				PR = newPR;
 			}
 	
-			newPR = newPR.map(rank => (1 - d) / N + d * rank);
-	
-			if (this.isConverged(PR, newPR)) {
-				console.info(`[o] PageRank convergé après ${iteration + 1} itérations.`);
-				break;
+			for(let j = 0; j <= PR.length-1; ++j) {
+				this.pages[j].setRelevance(PR[j])
 			}
-	
-			PR = newPR;
-		}
-
-		for(let j = 0; j <= PR.length-1; ++j) {
-			this.pages[j].setRelevance(PR[j])
-		}
-	
-		return PR;
+		
+			resolve(PR)
+		})
 	}
 	
+	/**
+	 * Verifie si un score se stabilise.
+	 * @param {Array<number>} oldRanks Ancien score.
+	 * @param {Array<number>} newRanks Nouveau score.
+	 * @param {number} threshold Difference pour considerer que oui ou non ca converge.
+	 * @return {boolean}
+	 */
 	isConverged(oldRanks, newRanks, threshold = 0.0001) {
 		for (let i = 0; i <= oldRanks.length-1; ++i) {
 			if (Math.abs(oldRanks[i] - newRanks[i]) > threshold) {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -191,7 +220,7 @@ export default class Graph {
 			context.arc(x, y, radius, 0, 2 * Math.PI);
 
 			const rev = this.pages[i].getRelevance();
-			if (rev <= 0.10) {
+			if (rev <= 0.08) {
 				context.fillStyle = "red";
 			} else if (rev <= 0.14) {
 				context.fillStyle = "orange";
@@ -208,11 +237,6 @@ export default class Graph {
 				`${this.pages[i].name}`,
 				x - radius,
 				y - radius - 5
-			);
-			context.fillText(
-				`${this.pages[i].getRelevance().toFixed(2)}`,
-				x - radius,
-				y + radius + 15
 			);
 
 			const out = this.pages[i].getOut();
@@ -259,7 +283,7 @@ export default class Graph {
 
 	/**
 	 * Recuperer toutes les pages.
-	 * @return {Page[]}
+	 * @return {Array<Page>}
 	 */
 	getPages() {
 		return this.pages;
