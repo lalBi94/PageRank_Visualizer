@@ -193,7 +193,7 @@ export default class Graph {
 			const rev = this.pages[i].getRelevance();
 			if (rev <= 0.10) {
 				context.fillStyle = "red";
-			} else if (rev <= 0.12) {
+			} else if (rev <= 0.14) {
 				context.fillStyle = "orange";
 			} else {
 				context.fillStyle = "green";
