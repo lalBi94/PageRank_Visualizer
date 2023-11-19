@@ -6,12 +6,14 @@ window.addEventListener("load", () => {
 	let T = 1;
 
 	const PGS = [
-		new Page(0, "Facebook", 1 / 6, { x: 90, y: 350 }),
-		new Page(1, "Microsoft", 1 / 6, { x: 90, y: 190 }),
-		new Page(2, "Carrefour", 1 / 6, { x: 270, y: 110 }),
-		new Page(3, "Ubisoft", 1 / 6, { x: 330, y: 470 }),
-		new Page(4, "Github", 1 / 6, { x: 530, y: 420 }),
-		new Page(5, "Sony", 1 / 6, { x: 630, y: 220 })
+		new Page(0, "Facebook", { x: 400 + 150 * Math.cos(0), y: 300 + 150 * Math.sin(0) }),
+		new Page(1, "Microsoft", { x: 400 + 150 * Math.cos((2 * Math.PI) / 8), y: 300 + 150 * Math.sin((2 * Math.PI) / 8) }),
+		new Page(2, "Carrefour", { x: 400 + 150 * Math.cos((4 * Math.PI) / 8), y: 300 + 150 * Math.sin((4 * Math.PI) / 8) }),
+		new Page(3, "Ubisoft", { x: 400 + 150 * Math.cos((6 * Math.PI) / 8), y: 300 + 150 * Math.sin((6 * Math.PI) / 8) }),
+		new Page(4, "Github", { x: 400 + 150 * Math.cos((8 * Math.PI) / 8), y: 300 + 150 * Math.sin((8 * Math.PI) / 8) }),
+		new Page(5, "Sony", { x: 400 + 150 * Math.cos((10 * Math.PI) / 8), y: 300 + 150 * Math.sin((10 * Math.PI) / 8) }),
+		new Page(5, "Onde", { x: 400 + 150 * Math.cos((12 * Math.PI) / 8), y: 300 + 150 * Math.sin((12 * Math.PI) / 8) }),
+		new Page(6, "Bilal", { x: 400 + 150 * Math.cos((14 * Math.PI) / 8), y: 300 + 150 * Math.sin((14 * Math.PI) / 8) })		
 	]; 
 
 	const gr = new Graph(PGS, ROOT);
@@ -42,9 +44,9 @@ window.addEventListener("load", () => {
 		if (gr.updatePageOut(page_x_id, allPages[page_y_id]))
 			gr.updatePageIn(page_y_id, allPages[page_x_id]);
 
+		await gr.pagerank()
 		await gr.generateGraph()
+		console.log("\n", gr.getPages());
 		T++;
-	}, 1000)
-
-	console.log("\n", gr.getPages());
+	}, 500)
 });
