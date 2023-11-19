@@ -16,84 +16,60 @@ export default class Graph {
 		});
 	}
 
-
-
-
-
-
-
 	/**
-	 * Calculer le PageRank du graphe.
-	 * @param {number} dampingFactor Le facteur d'amortissement pour le calcul du PageRank.
-	 * @param {number} maxIterations Le nombre maximal d'itérations pour le calcul du PageRank.
-	 * @param {number} tolerance La tolérance pour la convergence du calcul du PageRank.
-	 * @return {Object} Un objet contenant les PageRanks des pages.
+	 * Calcul du PageRank de toutes les pages
+	 * @param {?number} d D 
+	 * @param {number} maxIterations 
+	 * @returns 
 	 */
-	async calculatePageRank(
-		dampingFactor = 0.85,
-		maxIterations = 100,
-		tolerance = 1e-6
-	) {
-		const pageRanks = {};
+	pagerank(d = 0.85, maxIterations = 100) {
+		const N = this.pages.length;
+		let PR = new Array(N).fill(1 / N);
 
-		// Initialiser les PageRanks
-		this.pages.forEach((page) => {
-			pageRanks[page.getId()] = 1 / this.pages.length;
-		});
-
-		// Itérations jusqu'à convergence ou nombre maximal d'itérations atteint
 		for (let iteration = 0; iteration < maxIterations; iteration++) {
-			const newPageRanks = {};
+			let newPR = new Array(N).fill(0);
 
-			for (const page of this.pages) {
-				let sum = 0;
+			for (let i = 0; i < N; i++) {
+				const outDegree = this.pages[i].getOut().length;
+	
+				if (outDegree > 0) {
+					const contribution = PR[i] / outDegree;
 
-				for (const inPageId of page.getIn()) {
-					const inPage = this.pages.find(
-						(p) => p.getId() === inPageId
-					);
-					const numOutlinks = inPage.getOut().length;
-
-					sum += pageRanks[inPageId] / numOutlinks;
-				}
-
-				newPageRanks[page.getId()] =
-					1 - dampingFactor + dampingFactor * sum;
-			}
-
-			// Vérifier la convergence
-			let convergence = true;
-
-			for (const pageId in pageRanks) {
-				if (
-					Math.abs(newPageRanks[pageId] - pageRanks[pageId]) >
-					tolerance
-				) {
-					convergence = false;
-					break;
+					this.pages[i].getOut().forEach((page, j) => {
+						const index = this.pages.indexOf(page);
+						newPR[index] += contribution;
+					});
+				} else {
+					const uniformContribution = PR[i] / N;
+					newPR = newPR.map(rank => rank + uniformContribution);
 				}
 			}
-
-			if (convergence) {
+	
+			newPR = newPR.map(rank => (1 - d) / N + d * rank);
+	
+			if (this.isConverged(PR, newPR)) {
+				console.info(`[o] PageRank convergé après ${iteration + 1} itérations.`);
 				break;
 			}
-
-			// Mettre à jour les PageRanks pour la prochaine itération
-			for (const pageId in pageRanks) {
-				pageRanks[pageId] = newPageRanks[pageId];
-			}
+	
+			PR = newPR;
 		}
 
-		return pageRanks;
+		for(let j = 0; j <= PR.length-1; ++j) {
+			this.pages[j].setRelevance(PR[j])
+		}
+	
+		return PR;
 	}
-
-
-
-
-
-
-
-
+	
+	isConverged(oldRanks, newRanks, threshold = 0.0001) {
+		for (let i = 0; i < oldRanks.length; i++) {
+			if (Math.abs(oldRanks[i] - newRanks[i]) > threshold) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Generer le graphe.
@@ -103,10 +79,10 @@ export default class Graph {
 		const context = this.root.getContext("2d");
 		context.fillStyle = "red";
 
-        const canvasWidth = this.root.width;
-        const canvasHeight = this.root.height;
+		const canvasWidth = this.root.width;
+		const canvasHeight = this.root.height;
 
-        context.clearRect(0, 0, canvasWidth, canvasHeight);
+		context.clearRect(0, 0, canvasWidth, canvasHeight);
 
 		const drawArrow = (context, x1, y1, x2, y2, t = 0.9) => {
 			const arrow = {
@@ -159,7 +135,7 @@ export default class Graph {
 				y - radius - 5
 			);
 			context.fillText(
-				`${this.pages[i].relevance}`,
+				`${this.pages[i].getRelevance().toFixed(2)}`,
 				x - radius,
 				y + radius + 15
 			);
