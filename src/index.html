@@ -8,7 +8,21 @@
     </head>
 
     <body>
-        <canvas width="1000" height="1000" id="root"></canvas>
+        <div id="app">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Nom</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+
+                <tbody id="datas"></tbody>
+            </table>
+    
+            <canvas width="500" height="500" id="root"></canvas>
+        </div>
 
         <script src="./src/main.js" type="module"></script>
     </body>
