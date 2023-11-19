@@ -4,7 +4,7 @@
   "description": "Page Rank simulation",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "ghpages -d src"
+    "deploy": "ghpages -d ./src"
   },
   "repository": {
     "type": "git",
