@@ -1,0 +1,23 @@
+{
+  "name": "pagerank_visualizer",
+  "version": "1.0",
+  "description": "Page Rank simulation",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "ghpages -d src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lalBi94/PageRank_Visualizer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lalBi94/PageRank_Visualizer/issues"
+  },
+  "homepage": "https://github.com/lalBi94/PageRank_Visualizer#readme",
+  "dependencies": {
+    "ghpages": "^0.0.10"
+  }
+}
