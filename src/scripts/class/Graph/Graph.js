@@ -20,15 +20,26 @@ export default class Graph {
 
 	/**
 	 * Supprimer aleatoirement a chaque iteration une page y faisant partie de la sortie d'une page x
-	 * en fonction de sa pertinence.
+	 * en fonction de sa pertinence. Si c'est la plus basse, elle aura un certain pourcentage de chance d'etre efface.
 	 */
 	async randomRemove() {
 		const page_x_id = Math.round(Math.random() * (this.pages.length - 1));
-		const selectedOut = this.pages[page_x_id].getOut().length-1
 		
-		if(selectedOut > 0) {
-			const ran = Math.round(Math.random() * (this.pages[page_x_id].getRelevance()*100))
-			this.pages[page_x_id].deleteInOut(ran)
+		if(this.pages[page_x_id].getOut().length > 0) {
+			const element = this.pages[page_x_id].getOut().sort((a, b) => {
+				b.getRelevance() - a.getRelevance()
+			})[0]
+
+			const ran = Math.floor(Math.random() * (element.getRelevance() * 100)) === 0;
+
+			if(ran) {
+				console.warn(ran)
+				console.warn(this.pages[ran] || null)
+				const deleted = await this.pages[page_x_id].deleteInOut(element.getId())
+				this.pages[page_x_id].setOut(deleted)
+			}
+
+			console.warn(this.pages)
 		}
 	}
 
@@ -39,7 +50,7 @@ export default class Graph {
 	async generateRanking() {
 		let stock = [...this.pages]
 		let sorted = stock.sort((a, b) => {
-			return b.getRelevance() - a.getRelevance()
+			return b.getPagerank() - a.getPagerank()
 		})
 
 		this.datas.innerHTML = ""
@@ -64,12 +75,12 @@ export default class Graph {
 			}
 
 			const score = document.createElement("td")
-			score.innerText = (parseFloat(sorted[i].getRelevance())*100).toFixed(2)
+			score.innerText = (parseFloat(sorted[i].getPagerank())).toFixed(2)
 
 			const rev = parseFloat(score.innerText)
-			if (rev <= 8) {
+			if (rev <= 0.09) {
 				score.setAttribute("class", "scoreboard-datas red")
-			} else if (rev <= 14) {
+			} else if (rev <= 0.14) {
 				score.setAttribute("class", "scoreboard-datas orange")
 			} else {
 				score.setAttribute("class", "scoreboard-datas green")
@@ -124,7 +135,7 @@ export default class Graph {
 			}
 	
 			for(let j = 0; j <= PR.length-1; ++j) {
-				this.pages[j].setRelevance(PR[j])
+				this.pages[j].setPagerank(PR[j])
 			}
 		
 			resolve(PR)
@@ -219,7 +230,7 @@ export default class Graph {
 			context.beginPath();
 			context.arc(x, y, radius, 0, 2 * Math.PI);
 
-			const rev = this.pages[i].getRelevance();
+			const rev = this.pages[i].getPagerank();
 			if (rev <= 0.08) {
 				context.fillStyle = "red";
 			} else if (rev <= 0.14) {
@@ -235,10 +246,13 @@ export default class Graph {
 			context.fillStyle = "black";
 			context.fillText(
 				`${this.pages[i].name}`,
-				x - radius,
-				y - radius - 5
+				x - radius - 15,
+				y - radius - 2
 			);
+		}
 
+		for(let i = 0; i <= this.pages.length-1; ++i) {
+			const { x, y } = await this.pages[i].getPosition();
 			const out = this.pages[i].getOut();
 
 			if (out.length >= 1) {

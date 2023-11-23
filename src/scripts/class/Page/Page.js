@@ -2,12 +2,14 @@ export default class Page {
     /**
      * @param {number} id Identifiant de la page.
      * @param {string} name Nom du site.
+     * @param {number} relevance Pertinence du site definit a la main.
      */
-    constructor(id, name) {
+    constructor(id, name, relevance) {
         this.id = id
         this.name = name
         this.position = {x: 0, y: 0}
-        this.relevance = 0.0
+        this.pagerank = 0.0
+        this.relevance = relevance
 
         /**
          * @type {Page[]}
@@ -20,11 +22,35 @@ export default class Page {
     }
 
     /**
-     * Update la pertinence.
+     * Recuperer la pertinence d'une page
+     * @return {number}
+     */
+    getRelevance() {
+        return this.relevance
+    }
+
+    /**
+     * Modifier la pertinance du site.
+     * @param {number} newPagerank La nouvelle valeur.
+     */
+    updatePagerank(newPagerank) {
+        this.pagerank = newPagerank
+    }
+
+    /**
+     * Update le PageRank.
      * @param {number} n La nouvelle valeur.
      */
-    setRelevance(n) {
-        this.relevance = n
+    setPagerank(n) {
+        this.pagerank = n
+    }
+
+    /**
+     * Recuperer le pagerank de la page.
+     * @return {number}
+     */
+    getPagerank() { 
+        return this.pagerank 
     }
 
     /**
@@ -34,21 +60,34 @@ export default class Page {
     getOut() {
         return this.out
     }
+
+    /**
+     * Ajouter un nouveau tableau de lien sortant
+     * @param {Page[]} out 
+     */
+    setOut(out) {
+        this.out = out
+    }
     
     /**
      * Supprimer une page sortante
      * @param {number} index Index de la page sortante a supprimer 
      */
-    deleteInOut(index) {
+    async deleteInOut(index) {
+        if(this.out.length <= 0) return
+
         let tmp = []
 
         for(let i = 0; i <= this.out.length-1; ++i) {
-            if(i !== index) {
+            if(this.out[i].getId() !== index) {
+                console.warn(i, index)
                 tmp.push(this.out[i])
             }
         }
 
+        console.warn("supprimer", tmp)
         this.out = tmp
+        return tmp
     }
 
     /**
@@ -57,14 +96,6 @@ export default class Page {
      */
     getIn() {
         return this.out
-    }
-
-    /**
-     * Modifier la pertinance du site.
-     * @param {number} newRelevance La nouvelle valeur.
-     */
-    updateRelevance(newRelevance) {
-        this.relevance = newRelevance
     }
 
     /**
@@ -104,30 +135,6 @@ export default class Page {
     }
 
     /**
-     * Recuperer la pertinence de la page.
-     * @return {number}
-     */
-    getRelevance() { 
-        return this.relevance 
-    }
-
-    /**
-     * Recuperer l'id de la page.
-     * @return {string}
-     */
-    getId() { 
-        return this.id 
-    }
-
-    /**
-     * Recuperer le npm de la page.
-     * @return {string}
-     */
-    getName() { 
-        return this.name 
-    }
-
-    /**
      * Changer la position du point
      * @param {{x: number, y: number}} position 
      * @return {Promise<void>}
@@ -142,5 +149,21 @@ export default class Page {
      */
     async getPosition() {
         return this.position
+    }
+
+    /**
+     * Recuperer l'id de la page.
+     * @return {number}
+     */
+    getId() { 
+        return this.id 
+    }
+
+    /**
+     * Recuperer le npm de la page.
+     * @return {string}
+     */
+    getName() { 
+        return this.name 
     }
 }

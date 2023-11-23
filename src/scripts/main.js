@@ -1,24 +1,24 @@
 import Graph from "./class/Graph/Graph.js";
 import Page from "./class/Page/Page.js";
 
+const timingInterval = 40
+
 window.addEventListener("load", () => {
 	const ROOT = document.getElementById("root")
 	const DATAS = document.getElementById("scoreboard-datas-container")
 	let T = 0;
 
 	const PGS = [
-		new Page(0, "Facebook"),
-		new Page(1, "Microsoft"),
-		new Page(2, "Carrefour"),
-		new Page(3, "Ubisoft"),
-		new Page(4, "Github"),
-		new Page(5, "Sony"),
-		new Page(5, "Docker"),
-		new Page(6, "Gouv"),
-		new Page(7, "Reddit"),
-		new Page(8, "Origin"),
-		new Page(9, "iut-fbleau"),
-		new Page(10, "Coca cola"),
+		new Page(0, "Instagram", 1/9),
+		new Page(1, "Snapchat", 1/8),
+		new Page(2, "Discord", 1/7),
+		new Page(3, "X", 1/7),
+		new Page(4, "Reddit", 1/6),
+		new Page(5, "BeReal", 1/5),
+		new Page(6, "Facebook", 1/5),
+		new Page(7, "Skype", 1/3),
+		new Page(8, "MSN", 1/2),
+		new Page(9, "MySpace", 1/2)
 	]; 
 
 	const gr = new Graph(PGS, ROOT, DATAS);
@@ -59,5 +59,5 @@ window.addEventListener("load", () => {
 
 		console.log(gr.getPages());
 		T++;
-	}, 100)
+	}, timingInterval)
 });
